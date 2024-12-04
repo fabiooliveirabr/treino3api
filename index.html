@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js "></script>
+</head>
+<body>
+    <h1>Pesquisar Filmes</h1>
+    <input type="text" id="caixaPesquisa">
+    <button id="btnPesquisar">Pesquisar</button> <br>
+
+    <div id="conteudo"></div>
+    <script>
+        $("#btnPesquisar").click(function(){
+            var filme_pesquisado = $("#caixaPesquisa").val();
+            const settings = {
+                async: true,
+                crossDomain: true,
+                url: 'https://imdb146.p.rapidapi.com/v1/find/?query='+filme_pesquisado,
+                method: 'GET',
+                headers: {
+                    'x-rapidapi-key': 'e1eb59dfb9msh99ad49b056b8cd4p1ae778jsn5b88bf8df34c',
+                    'x-rapidapi-host': 'imdb146.p.rapidapi.com'
+                }
+            };
+
+            $.ajax(settings).done(function (resposta) {
+                if(resposta.titleResults.results.length > 0){
+                    var qtd = resposta.titleResults.results.length;
+                    $("#conteudo").html(qtd+" filmes encontrados");
+                    resposta.titleResults.results.forEach(item => {
+                        var conteudoHTML = "";
+                        conteudoHTML += `
+                                        <h1>${item.titleNameText}</h1>
+                                        <img src='${item.titlePosterImageModel.url}' height='120'> <br>
+                                        <a href='https://embedder.net/e/${item.id}' target='_blank'> Assistir </a>
+                                        <hr>
+                                        `;
+                        $("#conteudo").append(conteudoHTML);
+                    });
+                }else{
+                    $("#conteudo").html("Nada encontrado!");
+                }
+            });
+        });
+    </script>
+
+    
+</body>
+</html>
